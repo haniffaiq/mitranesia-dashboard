@@ -114,7 +114,7 @@ type LoginResponse = {
 
 const API_BASE_URL =
   (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/$/, "") ||
-  "http://localhost:8000/api/dashboard";
+  "http://localhost:5001/api/dashboard";
 const TOKEN_KEY =
   (import.meta.env.VITE_SESSION_TOKEN_KEY as string | undefined) ||
   "mitra-revamp-dashboard-token";
