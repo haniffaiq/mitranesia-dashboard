@@ -1,0 +1,182 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: "Plus Jakarta Sans", "Inter", sans-serif;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  
+  --color-chart-1: hsl(var(--chart-1));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-5: hsl(var(--chart-5));
+  
+  --color-sidebar: hsl(var(--sidebar));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-primary: hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
+}
+
+/* 
+  Tone Warna Yang Menjual:
+  Warm, Earthy, Professional, Trustworthy.
+  Primary: Deep Warm Brown / Bronze (Stability, Quality)
+  Secondary: Soft Cream / Beige (Comfort, Approachability)
+  Accent: Muted Gold / Terracotta (Action, Highlight)
+*/
+
+:root {
+  --background: 30 20% 98%; /* Very light cream */
+  --foreground: 25 10% 20%; /* Dark warm grey/brown text */
+
+  --card: 0 0% 100%;
+  --card-foreground: 25 10% 20%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 25 10% 20%;
+
+  /* Primary: Deep Warm Bronze/Brown */
+  --primary: 28 45% 35%;
+  --primary-foreground: 30 30% 96%;
+
+  /* Secondary: Soft Warm Beige */
+  --secondary: 32 30% 90%;
+  --secondary-foreground: 28 45% 25%;
+
+  /* Muted: Subtle Warm Grey */
+  --muted: 30 10% 94%;
+  --muted-foreground: 25 5% 45%;
+
+  /* Accent: Warm Gold/Orange for interactions */
+  --accent: 35 85% 55%; 
+  --accent-foreground: 0 0% 100%;
+
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+
+  --border: 30 15% 90%;
+  --input: 30 15% 90%;
+  --ring: 28 45% 35%;
+
+  --radius: 0.75rem;
+
+  --sidebar: 0 0% 98%;
+  --sidebar-foreground: 240 5.3% 26.1%;
+  --sidebar-primary: 240 5.9% 10%;
+  --sidebar-primary-foreground: 0 0% 98%;
+  --sidebar-accent: 240 4.8% 95.9%;
+  --sidebar-accent-foreground: 240 5.9% 10%;
+  --sidebar-border: 220 13% 91%;
+  --sidebar-ring: 217.2 91.2% 59.8%;
+  
+  --chart-1: 28 45% 35%;
+  --chart-2: 35 85% 55%;
+  --chart-3: 173 58% 39%;
+  --chart-4: 43 74% 66%;
+  --chart-5: 27 87% 67%;
+}
+
+.dark {
+  --background: 25 10% 10%;
+  --foreground: 30 20% 98%;
+
+  --card: 25 10% 13%;
+  --card-foreground: 30 20% 98%;
+
+  --popover: 25 10% 13%;
+  --popover-foreground: 30 20% 98%;
+
+  --primary: 35 85% 55%; /* Gold/Orange stands out more in dark mode */
+  --primary-foreground: 25 10% 10%;
+
+  --secondary: 25 10% 18%;
+  --secondary-foreground: 30 20% 98%;
+
+  --muted: 25 10% 18%;
+  --muted-foreground: 25 5% 65%;
+
+  --accent: 28 45% 35%;
+  --accent-foreground: 30 20% 98%;
+
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+
+  --border: 25 10% 18%;
+  --input: 25 10% 18%;
+  --ring: 35 85% 55%;
+  
+  --sidebar: 240 5.9% 10%;
+  --sidebar-foreground: 240 4.8% 95.9%;
+  --sidebar-primary: 224.3 76.3% 48%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 240 3.7% 15.9%;
+  --sidebar-accent-foreground: 240 4.8% 95.9%;
+  --sidebar-border: 240 3.7% 15.9%;
+  --sidebar-ring: 217.2 91.2% 59.8%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+}
+
+/* Custom Utilities for "Selling Tone" */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .glass-card {
+    @apply bg-white/80 dark:bg-black/50 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-lg;
+  }
+  
+  .primary-gradient {
+    @apply bg-gradient-to-r from-primary to-[hsl(35_85%_55%)];
+  }
+  
+  .hover-lift {
+    @apply transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg;
+  }
+}
