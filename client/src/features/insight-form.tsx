@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ImageAssetField } from "@/components/image-asset-field";
+import { RichTextEditor } from "@/components/rich-text-editor";
 import { slugify } from "@/lib/utils";
 
 const defaultValues: InsightFormValues = {
@@ -244,7 +245,11 @@ export function InsightForm({
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Textarea rows={5} {...field} />
+                        <RichTextEditor
+                          value={field.value}
+                          onChange={field.onChange}
+                          placeholder={`Tulis paragraf ${index + 1}…`}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
