@@ -3,7 +3,9 @@ WORKDIR /app
 COPY package*.json ./
 # npm ci uses lockfile for reproducible install + explicit rollup native bin (npm/cli#4828)
 RUN npm ci --no-audit --no-fund && \
-    npm install --no-save --no-audit --no-fund @rollup/rollup-linux-x64-gnu
+    npm install --no-save --no-audit --no-fund \
+      @rollup/rollup-linux-x64-gnu \
+      lightningcss-linux-x64-gnu
 COPY . .
 RUN npm run build
 
