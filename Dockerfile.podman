@@ -1,7 +1,9 @@
 FROM docker.io/library/node:22-slim AS builder
 WORKDIR /app
 COPY package*.json ./
-RUN npm install --no-audit --no-fund
+# remove lockfile to bypass npm optionalDependencies platform bug
+# (rollup native bin missing — https://github.com/npm/cli/issues/4828)
+RUN rm -f package-lock.json && npm install --no-audit --no-fund
 COPY . .
 RUN npm run build
 
