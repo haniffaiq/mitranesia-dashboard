@@ -56,6 +56,7 @@ export interface Merchant {
 
 export interface MerchantAdmin extends Merchant {
   isTopMerchant?: boolean;
+  isOfficialPartner?: boolean;
   description?: string;
   tags?: string[];
 }
@@ -143,6 +144,7 @@ export const merchantFormSchema = z.object({
   rating: z.coerce.number().min(0).max(5).nullable().optional(),
   isActive: z.boolean(),
   isTopMerchant: z.boolean().optional(),
+  isOfficialPartner: z.boolean().optional(),
   description: z.string().optional(),
   tags: z.array(z.string()).default([]),
   packages: z.array(packageSchema).min(1, "Minimal 1 paket"),

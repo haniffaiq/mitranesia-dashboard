@@ -55,6 +55,7 @@ type MerchantApi = {
   rating: number | null;
   is_active: boolean;
   is_top_merchant: boolean;
+  is_official_partner: boolean;
   description: string | null;
   packages: MerchantPackageApi[];
   created_at: string;
@@ -155,6 +156,7 @@ function toMerchant(input: MerchantApi): MerchantAdmin {
     rating: input.rating,
     isActive: input.is_active,
     isTopMerchant: input.is_top_merchant,
+    isOfficialPartner: input.is_official_partner,
     description: input.description ?? undefined,
     packages: input.packages
       .sort((a, b) => a.sort_order - b.sort_order)
@@ -224,6 +226,7 @@ function toMerchantPayload(values: MerchantFormValues) {
     rating: values.rating ?? null,
     is_active: values.isActive,
     is_top_merchant: values.isTopMerchant ?? false,
+    is_official_partner: values.isOfficialPartner ?? false,
     description: values.description || null,
     packages: values.packages.map((item, index) => ({
       id: item.id.startsWith("pkg-") ? null : item.id,

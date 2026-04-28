@@ -27,6 +27,7 @@ const defaultValues: MerchantFormValues = {
   rating: null,
   isActive: true,
   isTopMerchant: false,
+  isOfficialPartner: false,
   description: "",
   tags: [],
   packages: [
@@ -268,6 +269,18 @@ export function MerchantForm({
                   render={({ field }) => (
                     <FormItem className="flex items-center gap-2 space-y-0">
                       <FormLabel>Top merchant</FormLabel>
+                      <FormControl>
+                        <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="isOfficialPartner"
+                  render={({ field }) => (
+                    <FormItem className="flex items-center gap-2 space-y-0">
+                      <FormLabel>Official partner</FormLabel>
                       <FormControl>
                         <Switch checked={field.value} onCheckedChange={field.onChange} />
                       </FormControl>
