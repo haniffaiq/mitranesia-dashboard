@@ -15,6 +15,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/auth";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const navItems = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
@@ -118,6 +119,7 @@ export function DashboardShell({
               </div>
               <div className="flex items-center gap-3">
                 {actions}
+                <ThemeToggle />
                 <Button variant="outline" size="icon" className="rounded-full">
                   <Bell className="h-4 w-4" />
                 </Button>

@@ -1,4 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { BadgeCheck, Eye, Star } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { MerchantAdmin, MerchantFormValues } from "@shared/schema";
@@ -76,6 +78,9 @@ export function MerchantForm({
     control: form.control,
     name: "packages",
   });
+
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const previewValues = form.watch();
 
   return (
     <Form {...form}>
@@ -386,11 +391,82 @@ export function MerchantForm({
         </Card>
 
         <div className="flex justify-end gap-3">
+          <Button type="button" variant="outline" onClick={() => setPreviewOpen(true)} className="gap-2">
+            <Eye className="h-4 w-4" />
+            Preview
+          </Button>
           <Button type="submit" className="min-w-32" disabled={isPending}>
             {isPending ? "Menyimpan..." : "Simpan Merchant"}
           </Button>
         </div>
       </form>
+
+      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Preview Merchant</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="flex items-start gap-4">
+              {(previewValues.logoBase64 || previewValues.logoUrl) ? (
+                <img
+                  src={previewValues.logoBase64 || previewValues.logoUrl}
+                  alt={previewValues.name}
+                  className="h-20 w-20 shrink-0 rounded-full border-2 border-border bg-white object-contain p-1"
+                />
+              ) : (
+                <div className="h-20 w-20 shrink-0 rounded-full border-2 border-dashed border-border bg-muted/30" />
+              )}
+              <div className="flex-1 space-y-1">
+                <h2 className="text-xl font-bold inline-flex items-center gap-2">
+                  {previewValues.name || "Nama merchant"}
+                  {previewValues.isOfficialPartner ? (
+                    <BadgeCheck size={18} className="text-blue-600" />
+                  ) : null}
+                </h2>
+                <p className="text-sm text-muted-foreground">{previewValues.category || "Kategori"}</p>
+                <div className="flex flex-wrap items-center gap-2 text-xs">
+                  <Badge variant="secondary">{previewValues.type}</Badge>
+                  {previewValues.isOfficialPartner ? (
+                    <Badge className="bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-50 gap-1">
+                      <BadgeCheck size={12} className="text-blue-600" /> Official Partner
+                    </Badge>
+                  ) : null}
+                  {previewValues.isTopMerchant ? <Badge variant="outline">Top merchant</Badge> : null}
+                  {typeof previewValues.rating === "number" && previewValues.rating > 0 ? (
+                    <span className="inline-flex items-center gap-1 text-yellow-600">
+                      <Star size={12} className="fill-current" /> {previewValues.rating}
+                    </span>
+                  ) : null}
+                </div>
+              </div>
+            </div>
+            {previewValues.description ? (
+              <p className="text-sm text-muted-foreground">{previewValues.description}</p>
+            ) : null}
+            <div className="rounded-lg border border-border/60 p-3 text-sm">
+              <span className="text-muted-foreground">BEP estimasi: </span>
+              <span className="font-semibold">{previewValues.bepMonths} bulan</span>
+            </div>
+            <div className="space-y-2">
+              <p className="text-sm font-semibold">Paket ({previewValues.packages?.length ?? 0})</p>
+              <div className="space-y-2">
+                {(previewValues.packages ?? []).map((pkg, idx) => (
+                  <div key={idx} className="rounded-lg border border-border/60 p-3 text-sm">
+                    <div className="flex items-baseline justify-between gap-2">
+                      <p className="font-medium">{pkg.name || `Paket ${idx + 1}`}</p>
+                      <p className="font-bold text-primary">
+                        Rp {(pkg.price ?? 0).toLocaleString("id-ID")}
+                      </p>
+                    </div>
+                    <p className="text-xs text-muted-foreground">{pkg.description}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </Form>
   );
 }

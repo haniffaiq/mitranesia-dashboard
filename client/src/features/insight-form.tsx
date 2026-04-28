@@ -1,4 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Eye } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { InsightArticleAdmin, InsightFormValues } from "@shared/schema";
@@ -56,6 +58,8 @@ export function InsightForm({
   }, [form, insight]);
 
   const paragraphs = form.watch("content");
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const previewValues = form.watch();
 
   return (
     <Form {...form}>
@@ -260,12 +264,52 @@ export function InsightForm({
           </CardContent>
         </Card>
 
-        <div className="flex justify-end">
+        <div className="flex justify-end gap-2">
+          <Button type="button" variant="outline" onClick={() => setPreviewOpen(true)} className="gap-2">
+            <Eye className="h-4 w-4" />
+            Preview
+          </Button>
           <Button type="submit" disabled={isPending}>
             {isPending ? "Menyimpan..." : "Simpan Artikel"}
           </Button>
         </div>
       </form>
+
+      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+        <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Preview Artikel</DialogTitle>
+          </DialogHeader>
+          <article className="space-y-4">
+            <div className="space-y-1">
+              <p className="text-xs text-muted-foreground uppercase tracking-wide">{previewValues.category || "Kategori"}</p>
+              <h1 className="text-3xl font-bold">{previewValues.title || "Judul artikel"}</h1>
+              <p className="text-sm text-muted-foreground">
+                {previewValues.author || "Author"} · {previewValues.readTime || "Read time"}
+              </p>
+            </div>
+            {(previewValues.imageBase64 || previewValues.image) ? (
+              <img
+                src={previewValues.imageBase64 || previewValues.image}
+                alt={previewValues.title}
+                className="aspect-video w-full rounded-lg object-cover"
+              />
+            ) : null}
+            {previewValues.excerpt ? (
+              <p className="text-base italic text-muted-foreground">{previewValues.excerpt}</p>
+            ) : null}
+            <div className="prose prose-sm max-w-none dark:prose-invert">
+              {(previewValues.content ?? []).map((html, idx) => {
+                const trimmed = (html ?? "").trim();
+                if (!trimmed) return null;
+                return (
+                  <div key={idx} dangerouslySetInnerHTML={{ __html: trimmed }} />
+                );
+              })}
+            </div>
+          </article>
+        </DialogContent>
+      </Dialog>
     </Form>
   );
 }
