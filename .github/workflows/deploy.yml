@@ -52,7 +52,7 @@ jobs:
             dist/ "$VPS_USER@$VPS_HOST:/srv/dashboard/dist/"
           rsync -az \
             -e "ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no" \
-            Dockerfile.podman nginx.podman.conf \
+            Dockerfile.podman nginx.podman.conf .dockerignore \
             "$VPS_USER@$VPS_HOST:/srv/dashboard/"
 
       - name: Build podman image + restart container
