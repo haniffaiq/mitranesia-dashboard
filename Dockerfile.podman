@@ -1,13 +1,12 @@
 FROM docker.io/library/node:22-slim AS builder
 WORKDIR /app
+RUN corepack enable && corepack prepare pnpm@9 --activate
 COPY package*.json ./
-# npm ci uses lockfile for reproducible install + explicit rollup native bin (npm/cli#4828)
-RUN npm ci --no-audit --no-fund && \
-    npm install --no-save --no-audit --no-fund \
-      @rollup/rollup-linux-x64-gnu \
-      lightningcss-linux-x64-gnu
+# pnpm handles platform-specific optional native deps correctly (avoids npm/cli#4828)
+RUN pnpm import 2>/dev/null || true
+RUN pnpm install --prod=false --reporter=silent
 COPY . .
-RUN npm run build
+RUN pnpm run build
 
 FROM docker.io/library/nginx:alpine
 COPY --from=builder /app/dist /usr/share/nginx/html
