@@ -13,25 +13,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: npm
-
-      - name: Install deps
-        run: |
-          rm -rf node_modules package-lock.json
-          npm install --no-audit --no-fund
-          # workaround npm optionalDependencies platform bug (rollup native bin)
-          npm install --no-save --no-audit --no-fund @rollup/rollup-linux-x64-gnu
-
-      - name: Build
-        run: npm run build
-
       - name: Setup SSH
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -42,26 +23,20 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -H "$VPS_HOST" >> ~/.ssh/known_hosts
 
-      - name: Ship dist + Dockerfile + nginx.conf to VPS
-        env:
-          VPS_USER: ${{ secrets.VPS_USER }}
-          VPS_HOST: ${{ secrets.VPS_HOST }}
-        run: |
-          rsync -az --delete \
-            -e "ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no" \
-            dist/ "$VPS_USER@$VPS_HOST:/srv/dashboard/dist/"
-          rsync -az \
-            -e "ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no" \
-            Dockerfile.podman nginx.podman.conf .dockerignore \
-            "$VPS_USER@$VPS_HOST:/srv/dashboard/"
-
-      - name: Build podman image + restart container
+      - name: Trigger deploy on VPS (git pull, podman build, restart)
         env:
           VPS_USER: ${{ secrets.VPS_USER }}
           VPS_HOST: ${{ secrets.VPS_HOST }}
         run: |
           ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no "$VPS_USER@$VPS_HOST" \
-            "set -e; cd /srv/dashboard && podman build -t mitranesia-dashboard:latest -f Dockerfile.podman . && systemctl restart container-mitranesia-dashboard && sleep 3 && systemctl is-active container-mitranesia-dashboard"
+            "set -e
+             cd /srv/dashboard
+             git fetch --all --prune
+             git reset --hard origin/main
+             podman build -t mitranesia-dashboard:latest -f Dockerfile.podman .
+             systemctl restart container-mitranesia-dashboard
+             sleep 3
+             systemctl is-active container-mitranesia-dashboard"
 
       - name: Smoke test
         run: |
