@@ -23,7 +23,11 @@ jobs:
           cache: npm
 
       - name: Install deps
-        run: npm install --no-audit --no-fund
+        run: |
+          rm -rf node_modules package-lock.json
+          npm install --no-audit --no-fund
+          # workaround npm optionalDependencies platform bug (rollup native bin)
+          npm install --no-save --no-audit --no-fund @rollup/rollup-linux-x64-gnu
 
       - name: Build
         run: npm run build
