@@ -1,7 +1,7 @@
 FROM docker.io/library/node:22-slim AS builder
 WORKDIR /app
 RUN corepack enable && corepack prepare pnpm@9 --activate
-COPY package*.json ./
+COPY package*.json .npmrc* ./
 # pnpm handles platform-specific optional native deps correctly (avoids npm/cli#4828)
 RUN pnpm import 2>/dev/null || true
 RUN pnpm install --prod=false --reporter=silent
