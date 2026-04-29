@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+# Type-check changed TS/TSX files; tolerant fast guard.
+echo "[pre-commit] tsc --noEmit"
+npm run check --silent || { echo "TypeScript check failed"; exit 1; }
