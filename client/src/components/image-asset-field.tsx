@@ -117,10 +117,23 @@ export function ImageAssetField({
 
   const previewSrc = base64Value || urlValue;
 
+  const MAX_FILE_BYTES = 2 * 1024 * 1024; // 2MB
+  const ALLOWED_MIMES = ["image/png", "image/jpeg", "image/webp", "image/gif", "image/svg+xml"];
+  const [validationError, setValidationError] = React.useState<string>("");
+
   async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     event.target.value = "";
+    setValidationError("");
     if (!file) return;
+    if (!ALLOWED_MIMES.includes(file.type)) {
+      setValidationError(`Format ${file.type || "unknown"} tidak didukung. Pakai PNG/JPEG/WebP/GIF/SVG.`);
+      return;
+    }
+    if (file.size > MAX_FILE_BYTES) {
+      setValidationError(`File terlalu besar: ${(file.size / 1024 / 1024).toFixed(2)}MB (max 2MB).`);
+      return;
+    }
     const dataUrl = await readFileAsDataUrl(file);
     setOriginalDataUrl(dataUrl);
     setFileName(file.name);
@@ -292,6 +305,7 @@ export function ImageAssetField({
         ) : null}
       </div>
 
+      {validationError ? <p className="text-sm font-medium text-destructive">{validationError}</p> : null}
       {error ? <p className="text-sm font-medium text-destructive">{error}</p> : null}
     </div>
   );
