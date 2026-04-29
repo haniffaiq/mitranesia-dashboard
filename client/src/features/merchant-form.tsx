@@ -40,6 +40,7 @@ const defaultValues: MerchantFormValues = {
       description: "",
     },
   ],
+  images: [],
 };
 
 function getMerchantFormValues(merchant?: MerchantAdmin | null): MerchantFormValues {
@@ -53,6 +54,13 @@ function getMerchantFormValues(merchant?: MerchantAdmin | null): MerchantFormVal
     description: merchant.description ?? "",
     logoBase64: merchant.logoBase64 ?? "",
     tags: merchant.tags ?? [],
+    images: (merchant.images ?? []).map((img, idx) => ({
+      id: img.id,
+      label: img.label ?? "",
+      imageUrl: img.imageUrl ?? "",
+      imageBase64: img.imageBase64 ?? "",
+      sortOrder: img.sortOrder ?? idx,
+    })),
   };
 }
 
@@ -77,6 +85,11 @@ export function MerchantForm({
   const packages = useFieldArray({
     control: form.control,
     name: "packages",
+  });
+
+  const images = useFieldArray({
+    control: form.control,
+    name: "images",
   });
 
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -385,6 +398,92 @@ export function MerchantForm({
                   />
                 </div>
                 <Separator className="mt-4" />
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+
+        <Card className="border-border/60">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle>Gallery (max 3)</CardTitle>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Foto outlet, menu, atau aspek bisnis lainnya. Tampil di halaman detail merchant.
+              </p>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              disabled={images.fields.length >= 3}
+              onClick={() =>
+                images.append({
+                  id: `img-${images.fields.length + 1}`,
+                  label: "",
+                  imageUrl: "",
+                  imageBase64: "",
+                  sortOrder: images.fields.length,
+                })
+              }
+            >
+              Tambah Gambar
+            </Button>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {images.fields.length === 0 ? (
+              <p className="text-sm text-muted-foreground">Belum ada gambar gallery. Klik "Tambah Gambar" untuk mulai.</p>
+            ) : null}
+            {images.fields.map((item, index) => (
+              <div key={item.id} className="rounded-2xl border border-border/60 p-4">
+                <div className="mb-3 flex items-center justify-between">
+                  <p className="text-sm font-semibold">Gambar {index + 1}</p>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    className="text-destructive hover:text-destructive"
+                    onClick={() => images.remove(index)}
+                  >
+                    Hapus
+                  </Button>
+                </div>
+                <FormField
+                  control={form.control}
+                  name={`images.${index}.label`}
+                  render={({ field }) => (
+                    <FormItem className="mb-3">
+                      <FormLabel>Label (opsional)</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder="Contoh: Outlet, Menu, Tampak Depan" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name={`images.${index}.imageUrl`}
+                  render={() => (
+                    <FormItem>
+                      <ImageAssetField
+                        label={`Gambar ${index + 1}`}
+                        urlLabel="https://example.com/photo.jpg"
+                        uploadLabel={`Upload gambar ${index + 1}`}
+                        urlValue={form.watch(`images.${index}.imageUrl`) ?? ""}
+                        base64Value={form.watch(`images.${index}.imageBase64`) ?? ""}
+                        error={
+                          form.formState.errors.images?.[index]?.imageUrl?.message ??
+                          form.formState.errors.images?.[index]?.imageBase64?.message
+                        }
+                        onUrlChange={(value) => {
+                          form.setValue(`images.${index}.imageUrl`, value, { shouldValidate: true, shouldDirty: true });
+                          if (value) form.setValue(`images.${index}.imageBase64`, "", { shouldValidate: true, shouldDirty: true });
+                        }}
+                        onBase64Change={(value) => {
+                          form.setValue(`images.${index}.imageBase64`, value, { shouldValidate: true, shouldDirty: true });
+                        }}
+                      />
+                    </FormItem>
+                  )}
+                />
               </div>
             ))}
           </CardContent>

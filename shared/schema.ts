@@ -54,11 +54,20 @@ export interface Merchant {
   updatedAt?: string;
 }
 
+export interface MerchantImageAdmin {
+  id: string;
+  label?: string;
+  imageUrl?: string;
+  imageBase64?: string;
+  sortOrder: number;
+}
+
 export interface MerchantAdmin extends Merchant {
   isTopMerchant?: boolean;
   isOfficialPartner?: boolean;
   description?: string;
   tags?: string[];
+  images?: MerchantImageAdmin[];
 }
 
 export interface InsightArticle {
@@ -130,6 +139,22 @@ const optionalImageBase64Schema = z
     message: "File upload harus berupa data image base64 valid",
   });
 
+const merchantImageSchema = z.object({
+  id: z.string().min(1),
+  label: z.string().optional().default(""),
+  imageUrl: optionalImageUrlSchema.default(""),
+  imageBase64: optionalImageBase64Schema.default(""),
+  sortOrder: z.number().int().nonnegative().default(0),
+}).superRefine((values, ctx) => {
+  if (!hasValue(values.imageUrl) && !hasValue(values.imageBase64)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["imageUrl"],
+      message: "Isi image URL atau upload gambar lokal",
+    });
+  }
+});
+
 export const merchantFormSchema = z.object({
   name: z.string().min(1, "Nama merchant wajib diisi"),
   slug: z
@@ -148,6 +173,7 @@ export const merchantFormSchema = z.object({
   description: z.string().optional(),
   tags: z.array(z.string()).default([]),
   packages: z.array(packageSchema).min(1, "Minimal 1 paket"),
+  images: z.array(merchantImageSchema).max(3, "Maksimal 3 gambar gallery").default([]),
 }).superRefine((values, ctx) => {
   if (!hasValue(values.logoUrl) && !hasValue(values.logoBase64)) {
     ctx.addIssue({

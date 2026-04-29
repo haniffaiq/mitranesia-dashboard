@@ -43,6 +43,16 @@ type MerchantPackageApi = {
   updated_at: string;
 };
 
+type MerchantImageApi = {
+  id: string;
+  label: string | null;
+  image_url: string | null;
+  image_base64: string | null;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+};
+
 type MerchantApi = {
   id: string;
   name: string;
@@ -58,6 +68,7 @@ type MerchantApi = {
   is_official_partner: boolean;
   description: string | null;
   packages: MerchantPackageApi[];
+  images: MerchantImageApi[];
   created_at: string;
   updated_at: string;
 };
@@ -166,6 +177,16 @@ function toMerchant(input: MerchantApi): MerchantAdmin {
         price: item.price,
         description: item.description,
       })),
+    images: (input.images ?? [])
+      .slice()
+      .sort((a, b) => a.sort_order - b.sort_order)
+      .map((item) => ({
+        id: item.id,
+        label: item.label ?? undefined,
+        imageUrl: item.image_url ?? undefined,
+        imageBase64: item.image_base64 ?? undefined,
+        sortOrder: item.sort_order,
+      })),
     createdAt: input.created_at,
     updatedAt: input.updated_at,
   };
@@ -233,6 +254,13 @@ function toMerchantPayload(values: MerchantFormValues) {
       name: item.name,
       price: item.price,
       description: item.description,
+      sort_order: index,
+    })),
+    images: (values.images ?? []).map((item, index) => ({
+      id: item.id.startsWith("img-") ? null : item.id,
+      label: item.label || null,
+      image_url: item.imageUrl || null,
+      image_base64: item.imageBase64 || null,
       sort_order: index,
     })),
   };
