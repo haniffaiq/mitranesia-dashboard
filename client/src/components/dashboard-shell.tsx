@@ -9,6 +9,7 @@ import {
   Settings,
   ShieldCheck,
   Store,
+  Trash2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -23,6 +24,7 @@ const navItems = [
   { href: "/dashboard/carousels", label: "Carousels", icon: Images },
   { href: "/dashboard/insights", label: "Insights", icon: BookOpenText },
   { href: "/dashboard/admins", label: "Admins", icon: ShieldCheck },
+  { href: "/dashboard/trash", label: "Trash", icon: Trash2 },
   { href: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
 

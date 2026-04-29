@@ -439,6 +439,34 @@ export const dashboardApi = {
     );
     return toMerchant(response.data);
   },
+  async deleteMerchant(id: string) {
+    await apiFetch<void>(`/merchants/${id}`, { method: "DELETE" });
+    return true;
+  },
+  async listTrashedMerchants() {
+    const response = await apiFetch<ListResponse<MerchantApi>>("/merchants/trash/list?page=1&page_size=100");
+    return response.data.map(toMerchant);
+  },
+  async restoreMerchant(id: string) {
+    const response = await apiFetch<DetailResponse<MerchantApi>>(`/merchants/${id}/restore`, { method: "POST" });
+    return toMerchant(response.data);
+  },
+  async hardDeleteMerchant(id: string) {
+    await apiFetch<void>(`/merchants/${id}/hard`, { method: "DELETE" });
+    return true;
+  },
+  async listTrashedInsights() {
+    const response = await apiFetch<ListResponse<InsightApi>>("/insights/trash/list?page=1&page_size=100");
+    return response.data.map(toInsight);
+  },
+  async restoreInsight(id: string) {
+    const response = await apiFetch<DetailResponse<InsightApi>>(`/insights/${id}/restore`, { method: "POST" });
+    return toInsight(response.data);
+  },
+  async hardDeleteInsight(id: string) {
+    await apiFetch<void>(`/insights/${id}/hard`, { method: "DELETE" });
+    return true;
+  },
   async listCarousels() {
     const response = await apiFetch<ListResponse<CarouselApi>>(
       "/carousels?page=1&page_size=100",

@@ -148,6 +148,7 @@ export default function MerchantsPage() {
                   <TableHead>Category</TableHead>
                   <TableHead>Type</TableHead>
                   <TableHead>Paket</TableHead>
+                  <TableHead>Flags</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Updated</TableHead>
                   <TableHead className="text-right">Aksi</TableHead>
@@ -165,6 +166,16 @@ export default function MerchantsPage() {
                     <TableCell>{merchant.category}</TableCell>
                     <TableCell>{merchant.type}</TableCell>
                     <TableCell>{merchant.packages.length}</TableCell>
+                    <TableCell>
+                      <div className="flex flex-wrap gap-1">
+                        {merchant.isOfficialPartner ? (
+                          <Badge className="bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-50 text-[10px]">Official</Badge>
+                        ) : null}
+                        {merchant.isTopMerchant ? (
+                          <Badge variant="outline" className="text-[10px]">Top</Badge>
+                        ) : null}
+                      </div>
+                    </TableCell>
                     <TableCell>
                       <Badge variant={merchant.isActive ? "default" : "secondary"}>
                         {merchant.isActive ? "Active" : "Inactive"}
