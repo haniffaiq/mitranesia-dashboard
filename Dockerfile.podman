@@ -1,9 +1,9 @@
 FROM docker.io/library/node:22-slim AS builder
 WORKDIR /app
 COPY package*.json ./
-# nuke lockfile + npm install with platform-specific native binaries explicit
-RUN rm -f package-lock.json && \
-    npm install --no-audit --no-fund --legacy-peer-deps --include=optional && \
+# npm ci with lockfile = deterministic (fix hoist bug for @radix-ui packages).
+# --include=optional buat native binaries (rollup, lightningcss, tailwind oxide).
+RUN npm ci --no-audit --no-fund --legacy-peer-deps --include=optional && \
     npm install --no-save --no-audit --no-fund --legacy-peer-deps \
       @rollup/rollup-linux-x64-gnu \
       lightningcss-linux-x64-gnu \
