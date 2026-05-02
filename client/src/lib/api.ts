@@ -590,4 +590,42 @@ export const dashboardApi = {
       temporaryPassword: newPassword,
     };
   },
+
+  async listMerchantReviews(params: { status?: string; merchant_id?: string; page?: number; page_size?: number } = {}) {
+    const search = new URLSearchParams();
+    if (params.status) search.set("status", params.status);
+    if (params.merchant_id) search.set("merchant_id", params.merchant_id);
+    search.set("page", String(params.page ?? 1));
+    search.set("page_size", String(params.page_size ?? 20));
+    const response = await apiFetch<ListResponse<MerchantReviewAdminApi>>(
+      `/dashboard/merchant-reviews?${search.toString()}`,
+    );
+    return { data: response.data, meta: response.meta };
+  },
+  async updateReviewStatus(id: string, status: "approved" | "rejected" | "pending", isVerifiedMitra?: boolean) {
+    const response = await apiFetch<DetailResponse<MerchantReviewAdminApi>>(
+      `/dashboard/merchant-reviews/${id}/status`,
+      {
+        method: "PATCH",
+        body: JSON.stringify({ status, is_verified_mitra: isVerifiedMitra }),
+      },
+    );
+    return response.data;
+  },
+  async deleteReview(id: string) {
+    await apiFetch<void>(`/dashboard/merchant-reviews/${id}`, { method: "DELETE" });
+  },
+};
+
+export type MerchantReviewAdminApi = {
+  id: string;
+  merchant_id: string;
+  reviewer_name: string;
+  reviewer_email: string | null;
+  rating: number;
+  comment: string | null;
+  status: string;
+  is_verified_mitra: boolean;
+  created_at: string;
+  updated_at: string;
 };

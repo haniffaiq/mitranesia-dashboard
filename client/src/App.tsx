@@ -18,6 +18,7 @@ import InsightEditorPage from "@/pages/insight-editor";
 import AdminsPage from "@/pages/admins";
 import SettingsPage from "@/pages/settings";
 import TrashPage from "@/pages/trash";
+import ReviewsPage from "@/pages/reviews";
 import NotFoundPage from "@/pages/not-found";
 import { useAuth } from "@/lib/auth";
 
@@ -83,6 +84,11 @@ function AppRoutes() {
       <Route path="/dashboard/trash">
         <ProtectedRoute>
           <TrashPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/dashboard/reviews">
+        <ProtectedRoute>
+          <ReviewsPage />
         </ProtectedRoute>
       </Route>
       <Route path="/dashboard/settings">
